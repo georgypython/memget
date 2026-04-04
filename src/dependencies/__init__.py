@@ -1,6 +1,3 @@
 from .infrastructure import InfrastructureProvider
 
-
-__all__ = [
-    "InfrastructureProvider"
-]
+__all__ = ["InfrastructureProvider"]
