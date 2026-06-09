@@ -44,6 +44,7 @@ class DbConfig(BaseModel):
 
 
 class QdrantConfig(BaseModel):
+    embedding_model: str = "nomic-embed-text"
     api_key: str = "admin"
     host: str = "localhost"
     port: int = 6333
