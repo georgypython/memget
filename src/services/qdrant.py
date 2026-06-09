@@ -13,4 +13,4 @@ class QdrantService:
 
     
 
-qdrant = QdrantService()
+qdrant_service = QdrantService()
