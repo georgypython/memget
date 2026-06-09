@@ -1,10 +1,11 @@
 [project]
-name = "my-fastapi-template"
+name = "memget"
 version = "0.1.0"
-description = "Add your description here"
+description = "LLM & RAG Memory search tool"
 readme = "README.md"
 requires-python = ">=3.12.3"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "alembic>=1.17.2",
     "asyncpg>=0.31.0",
     "black>=26.1.0",
@@ -16,6 +17,7 @@ dependencies = [
     "pydantic-settings>=2.12.0",
     "qdrant-client>=1.18.0",
     "sqlalchemy[asyncio]>=2.0.45",
+    "uvicorn[standard]>=0.40.0",
 ]
 
 [dependency-groups]

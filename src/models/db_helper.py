@@ -36,4 +36,4 @@ class DbHelper:
         await self.engine.dispose()
 
 
-db_helper = DbHelper(url=settings.db.url_async)
+db_helper = DbHelper(url=settings.db.url)

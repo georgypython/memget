@@ -32,11 +32,7 @@ class ApiPrefix(BaseModel):
 
 
 class DbConfig(BaseModel):
-    host: str = "localhost"
-    passwd: str | None = None
-    user: str = "postgres"
-    name: str = "postgres"
-    port: int = 5432
+    url: str = "sqlite+aiosqlite:///memget.db"
 
     convention: dict = {
         "ix": "ix_%(column_0_label)s",
@@ -46,17 +42,13 @@ class DbConfig(BaseModel):
         "pk": "pk_%(table_name)s",
     }
 
-    @property
-    def url_async(self):
-        return f"postgresql+asyncpg://{self.user}:{self.passwd}@{self.host}:{self.port}/{self.name}"
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=BASE_PATH / ".env",
         case_sensitive=False,
         env_nested_delimiter="__",
-        env_prefix="APP_CONFIG__",
+        env_prefix="MEMGET__",
     )
     logger: LoggerConfig = LoggerConfig()
     api: ApiPrefix = ApiPrefix()
