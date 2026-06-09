@@ -857,7 +857,7 @@ wheels = [
 ]
 
 [[package]]
-name = "my-fastapi-template"
+name = "memget"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

@@ -43,17 +43,24 @@ class DbConfig(BaseModel):
     }
 
 
+class QdrantConfig(BaseModel):
+    api_key: str = "admin"
+    host: str = "localhost"
+    port: int = 6333
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=BASE_PATH / ".env",
         case_sensitive=False,
         env_nested_delimiter="__",
-        env_prefix="MEMGET__",
+        extra="forbid",
     )
     logger: LoggerConfig = LoggerConfig()
     api: ApiPrefix = ApiPrefix()
     run: RunConfig = RunConfig()
     db: DbConfig = DbConfig()
+    qdrant: QdrantConfig = QdrantConfig()
 
 
 settings = Settings()
