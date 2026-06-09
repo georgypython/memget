@@ -10,6 +10,8 @@ BASE_PATH = Path(__file__).resolve().parent.parent.parent
 class RunConfig(BaseModel):
     host: str = "0.0.0.0"
     port: int = 8000
+    title: str = "MemGet"
+    version: str = "0.1"
 
 
 class LoggerConfig(BaseModel):
