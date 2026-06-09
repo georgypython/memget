@@ -6,7 +6,6 @@ from sqlalchemy import DateTime, func, Table, ForeignKey, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
-from .documents import pack_docs
 
 if TYPE_CHECKING:
     from .chat import ChatOrm
@@ -30,8 +29,8 @@ class PackOrm(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
     
-    documents: Mapped[list["DocumentOrm | None"]] = relationship(
-            "documents.id", back_populates="packs", secondary=pack_docs
+    documents: Mapped["DocumentOrm | None"] = relationship(
+            "documents.id", back_populates="pack", 
     )
     chats: Mapped[list["ChatOrm | None"]] = relationship(
         "chats.id", back_populates="packs", secondary=pack_chats

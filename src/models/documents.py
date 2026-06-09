@@ -13,13 +13,6 @@ if TYPE_CHECKING:
     from .pack import PackOrm
 
 
-pack_docs = Table(
-    "pack_docs",
-    Base.metadata,
-    Column("pack_id", ForeignKey("packs.id", ondelete="CASCADE"), primary_key=True),
-    Column("document_id", ForeignKey("documents.id", ondelete="CASCADE"), primary_key=True),
-)
-
 chat_docs = Table(
     "chat_docs",
     Base.metadata,
@@ -37,8 +30,8 @@ class DocumentOrm(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
     
-    packs: Mapped[list["PackOrm | None"]] = relationship(
-            "packs.id", back_populates="documents", secondary=pack_docs
+    pack: Mapped["PackOrm"] = relationship(
+            "packs.id", back_populates="documents"
     )
     chats: Mapped[list["ChatOrm | None"]] = relationship(
             "chats.id", back_populates="documents", secondary=chat_docs
