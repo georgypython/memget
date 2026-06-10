@@ -1,6 +1,6 @@
-from .qdrant import QdrantService
+from .memory import MemoryService
 
 
 __all__ = [
-        "QdrantService"
+        "MemoryService"
         ]

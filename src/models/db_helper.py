@@ -6,7 +6,15 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from src.core.config import settings
-
+from src.models import (
+    Base, 
+    MessageOrm, 
+    ChatOrm, 
+    PackOrm, 
+    DocumentOrm, 
+    chat_docs, 
+    pack_chats
+)
 
 class DbHelper:
     def __init__(
@@ -26,6 +34,7 @@ class DbHelper:
             pool_size=pool_size,
             max_overflow=max_overflow,
         )
+
         self.session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
             bind=self.engine,
             autoflush=False,
@@ -34,6 +43,12 @@ class DbHelper:
 
     async def dispose(self) -> None:
         await self.engine.dispose()
+
+    async def init_db(self) -> None:
+        async with self.engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
+
 
 
 db_helper = DbHelper(url=settings.db.url)
