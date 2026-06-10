@@ -2,17 +2,30 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, func
+from sqlalchemy import DateTime, func, Table, Column, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
-from .documents import chat_docs
-from .pack import pack_chats
 
 if TYPE_CHECKING:
     from .message import MessageOrm
     from .documents import DocumentOrm
     from .pack import PackOrm
+
+
+pack_chats = Table(
+    "pack_chats",
+    Base.metadata,
+    Column("pack_id", ForeignKey("packs.id", ondelete="CASCADE"), primary_key=True),
+    Column("chat_id", ForeignKey("chats.id", ondelete="CASCADE"), primary_key=True),
+)
+
+chat_docs = Table(
+    "chat_docs",
+    Base.metadata,
+    Column("chat_id", ForeignKey("chats.id", ondelete="CASCADE"), primary_key=True),
+    Column("documents_id", ForeignKey("documents.id", ondelete="CASCADE"), primary_key=True),
+)
 
 
 class ChatOrm(Base):
@@ -25,11 +38,11 @@ class ChatOrm(Base):
     )
     
     messages: Mapped[list["MessageOrm | None"]] = relationship(
-            "messsages.id", back_populates="chat", cascade="all, delete-orphan"
+            "MessageOrm", back_populates="chat", cascade="all, delete-orphan"
     )
     documents: Mapped[list["DocumentOrm | None"]] = relationship(
-        "documents.id", back_populates="chats", secondary=chat_docs
+        "DocumentOrm", back_populates="chats", secondary=chat_docs
     )
     packs: Mapped[list["PackOrm | None"]] = relationship(
-        "packs.orm", back_populates="chats", secondary=pack_chats
+        "PackOrm", back_populates="chats", secondary=pack_chats
     )

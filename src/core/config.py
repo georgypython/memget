@@ -34,7 +34,7 @@ class ApiPrefix(BaseModel):
 
 
 class DbConfig(BaseModel):
-    url: str = "sqlite+aiosqlite:///memget.db"
+    url: str = f"sqlite+aiosqlite:///{BASE_PATH}/memget.db"
 
     convention: dict = {
         "ix": "ix_%(column_0_label)s",
@@ -52,7 +52,7 @@ class QdrantConfig(BaseModel):
 
 
 class SecurityConfig(BaseModel):
-    api_key: str = "admin"
+    api_key: str 
 
 
 class Settings(BaseSettings):
@@ -67,7 +67,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     db: DbConfig = DbConfig()
     qdrant: QdrantConfig = QdrantConfig()
-    security: SecurityConfig = SecurityConfig()
+    security: SecurityConfig
 
 
-settings = Settings()
+settings = Settings() # type: ignore
