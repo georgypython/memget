@@ -47,9 +47,12 @@ class DbConfig(BaseModel):
 
 class QdrantConfig(BaseModel):
     embedding_model: str = "nomic-embed-text"
-    api_key: str = "admin"
     host: str = "localhost"
     port: int = 6333
+
+
+class SecurityConfig(BaseModel):
+    api_key: str = "admin"
 
 
 class Settings(BaseSettings):
@@ -64,6 +67,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     db: DbConfig = DbConfig()
     qdrant: QdrantConfig = QdrantConfig()
+    security: SecurityConfig = SecurityConfig()
 
 
 settings = Settings()

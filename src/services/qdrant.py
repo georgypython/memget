@@ -8,9 +8,11 @@ class QdrantService:
         self.client = QdrantClient(
             host=settings.qdrant.host,
             port=settings.qdrant.port,
-            api_key=settings.qdrant.api_key,
+            api_key=settings.security.api_key,
         )
-
+    
+    async def create_pack(self, name: str):
+        pass
     
 
 qdrant_service = QdrantService()

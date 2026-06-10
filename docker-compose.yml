@@ -4,7 +4,7 @@ services:
     container_name: memget-qdrant
     restart: unless-stopped
     ports:
-      - "${QDRANT_PORT:-6333}:6333"
+      - "${QDRANT__HOST:-0.0.0.0}:${QDRANT__PORT:-6333}:6333"
     environment:
       QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-admin}
     volumes:
