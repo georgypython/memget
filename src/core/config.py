@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -46,10 +47,14 @@ class DbConfig(BaseModel):
 
 
 class QdrantConfig(BaseModel):
-    embedding_model: str = "nomic-embed-text"
     host: str = "localhost"
     port: int = 6333
 
+
+class ModelsConfig(BaseModel):
+    embed_model: str = "nomic-embed-text"
+    embed_path: str = "/api/embeddings"
+    llm_model: str = "qwen2.5"
 
 class SecurityConfig(BaseModel):
     api_key: str 
@@ -67,6 +72,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     db: DbConfig = DbConfig()
     qdrant: QdrantConfig = QdrantConfig()
+    models: ModelsConfig = ModelsConfig()
     security: SecurityConfig
 
 
