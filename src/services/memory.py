@@ -101,10 +101,10 @@ class MemoryService:
         self, name: str, vectors: list[list[float]], texts: list[str]
     ) -> None:
         points = []
-        for i, (vector, text) in enumerate(zip(vectors, texts)):
+        for vector, text in zip(vectors, texts):
             payload = {"text": text}
 
-            point = models.PointStruct(id=i, vector=vector, payload=payload)
+            point = models.PointStruct(id=uuid4(), vector=vector, payload=payload)
             points.append(point)
 
         await self.qdrant.upsert(name, points)
@@ -124,9 +124,6 @@ class MemoryService:
         try:
             doc_id = uuid4()
             document = DocumentOrm(name=file_name or str(doc_id), pack_id=pack.id)
-            self.session.add(document)
-            await self.session.flush()
-
             converted_doc = self.convert_document_for_chunking(
                 file, document.name, content_type
             )
@@ -138,6 +135,8 @@ class MemoryService:
             await self.save_vectors_to_collection(
                 name=pack.name, vectors=vectors, texts=texts
             )
+
+            self.session.add(document)
             await self.session.commit()
 
         except Exception as e:
