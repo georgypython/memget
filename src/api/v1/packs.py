@@ -5,7 +5,6 @@ from pydantic import Field
 from src.dependencies.services import get_memory_service
 from src.services.memory import MemoryService
 
-
 router = APIRouter()
 
 
@@ -24,9 +23,8 @@ async def create_pack(
 async def add_document_to_pack_by_id(
     id: UUID,
     document: UploadFile = File(...),
-    service: MemoryService = Depends(get_memory_service)
+    service: MemoryService = Depends(get_memory_service),
 ):
     await service.upload_document_to_pack(
         id, document.file, document.filename, document.content_type
     )
-

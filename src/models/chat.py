@@ -24,7 +24,9 @@ chat_docs = Table(
     "chat_docs",
     Base.metadata,
     Column("chat_id", ForeignKey("chats.id", ondelete="CASCADE"), primary_key=True),
-    Column("documents_id", ForeignKey("documents.id", ondelete="CASCADE"), primary_key=True),
+    Column(
+        "documents_id", ForeignKey("documents.id", ondelete="CASCADE"), primary_key=True
+    ),
 )
 
 
@@ -36,9 +38,9 @@ class ChatOrm(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
-    
+
     messages: Mapped[list["MessageOrm | None"]] = relationship(
-            "MessageOrm", back_populates="chat", cascade="all, delete-orphan"
+        "MessageOrm", back_populates="chat", cascade="all, delete-orphan"
     )
     documents: Mapped[list["DocumentOrm | None"]] = relationship(
         "DocumentOrm", back_populates="chats", secondary=chat_docs

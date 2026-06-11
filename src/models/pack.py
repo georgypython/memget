@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, func 
+from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -21,12 +21,11 @@ class PackOrm(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
-    
+
     documents: Mapped["DocumentOrm | None"] = relationship(
-            "DocumentOrm", back_populates="pack", 
+        "DocumentOrm",
+        back_populates="pack",
     )
     chats: Mapped[list["ChatOrm | None"]] = relationship(
         "ChatOrm", back_populates="packs", secondary=pack_chats
     )
-
-

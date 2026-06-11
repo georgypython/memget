@@ -22,5 +22,3 @@ class MessageOrm(Base):
     )
 
     chat: Mapped["ChatOrm"] = relationship("ChatOrm", back_populates="messages")
-
-

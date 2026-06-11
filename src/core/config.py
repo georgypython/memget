@@ -53,11 +53,12 @@ class QdrantConfig(BaseModel):
 
 class ModelsConfig(BaseModel):
     embed_model: str = "nomic-embed-text"
-    embed_path: str = "/api/embeddings"
+    embed_url: str = "http://localhost:11434/api/embeddings"
     llm_model: str = "qwen2.5"
 
+
 class SecurityConfig(BaseModel):
-    api_key: str 
+    api_key: str
 
 
 class Settings(BaseSettings):
@@ -76,4 +77,4 @@ class Settings(BaseSettings):
     security: SecurityConfig
 
 
-settings = Settings() # type: ignore
+settings = Settings()  # type: ignore
