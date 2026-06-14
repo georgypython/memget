@@ -167,10 +167,10 @@ class MemoryService:
         return [orm.from_orm_to_schema() for orm in packs_orm]
 
     
-    async def check_pack_collection_exists(self, id: UUID) -> bool:
+    async def is_pack_collection_exists(self, id: UUID) -> bool:
         pack = await self.session.get(PackOrm, id)
         if not pack:
-            raise ValueError("Not found")
+            raise ValueError("Pack not found")
 
         return await self.qdrant.collection_exists(pack.name)
 
@@ -183,4 +183,25 @@ class MemoryService:
             return []
         
         return [orm.from_orm_to_schema() for orm in docs_orm]
+    
+    async def send_pack_question(self, id: UUID, question: str):
+        pack = await self.session.get(PackOrm, id)
+        if not pack:
+            raise ValueError("Pack not found")
 
+        if not self.is_pack_collection_exists(id):
+            raise ValueError("Pack collection doesnt exists")
+
+        vector = await self.get_text_vector(question, True)
+
+        answer = await self.qdrant.query_points(
+            collection_name=pack.name, query=vector, limit=50, with_payload=True
+        )
+        resp: list[tuple[str, float]] = []
+
+        for p in answer.points:
+            payload = p.payload or {}
+            text: str = payload.get("text", "")
+            clean_text = text.replace('\n', ' ')
+            resp.append((clean_text, p.score))
+        return resp

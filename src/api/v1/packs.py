@@ -57,10 +57,19 @@ async def get_pack_documents_list(
 ):
     return await service.get_pack_documents_list(id) 
 
-@router.get("{id}/exists")
+@router.get("/{id}/exists")
 async def check_pack_exists(
     id: UUID, 
     service: MemoryService = Depends(get_memory_service),
 ):
-    status = await service.check_pack_collection_exists(id)
+    status = await service.is_pack_collection_exists(id)
     return {"status": status}
+
+
+@router.get("/{id}/question")
+async def send_pack_question(
+    id: UUID,
+    question: str,
+    service: MemoryService = Depends(get_memory_service),
+):
+    return await service.send_pack_question(id, question)
