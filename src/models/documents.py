@@ -5,6 +5,8 @@ from uuid import UUID, uuid4
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.schemas.document import DocumentSchema
+
 from .base import Base
 from src.models.chat import chat_docs
 
@@ -27,3 +29,8 @@ class DocumentOrm(Base):
     chats: Mapped[list["ChatOrm | None"]] = relationship(
         "ChatOrm", back_populates="documents", secondary=chat_docs
     )
+
+    def from_orm_to_schema(self) -> DocumentSchema:
+        return DocumentSchema(
+                id=self.id, name=self.name, pack_id=self.pack_id, created_at=self.created_at
+        )

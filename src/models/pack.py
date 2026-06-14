@@ -5,6 +5,8 @@ from uuid import UUID, uuid4
 from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.schemas.packs import PackSchema
+
 from .base import Base
 from src.models.chat import pack_chats
 
@@ -29,3 +31,7 @@ class PackOrm(Base):
     chats: Mapped[list["ChatOrm | None"]] = relationship(
         "ChatOrm", back_populates="packs", secondary=pack_chats
     )
+
+
+    def from_orm_to_schema(self) -> PackSchema:
+        return PackSchema(id=self.id, name=self.name, created_at=self.created_at)

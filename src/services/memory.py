@@ -5,6 +5,7 @@ from uuid import UUID, uuid4
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc.document import DoclingDocument
 from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from qdrant_client import AsyncQdrantClient, models
 from qdrant_client.http.exceptions import UnexpectedResponse
@@ -14,6 +15,7 @@ import tiktoken
 from httpx import AsyncClient
 
 from src.models import PackOrm, DocumentOrm
+from src.schemas.document import DocumentSchema
 from src.schemas.packs import PackSchema
 from src.core.logger_setup import logger
 
@@ -69,7 +71,7 @@ class MemoryService:
         await self.session.flush()
         await self.session.commit()
 
-        return PackSchema(id=pack.id, name=pack.name, created_at=pack.created_at)
+        return pack.from_orm_to_schema()
 
     def convert_document_for_chunking(
         self, file: BinaryIO, file_name: str, content_type: str
@@ -115,7 +117,7 @@ class MemoryService:
         file: BinaryIO,
         file_name: str | None,
         content_type: str | None,
-    ):
+    ) -> DocumentSchema:
         if not content_type:
             raise ValueError("Unknown content_type")
         pack = await self.session.get(PackOrm, pack_id)
@@ -138,7 +140,47 @@ class MemoryService:
 
             self.session.add(document)
             await self.session.commit()
-
+            return DocumentSchema(
+                id=document.id, 
+                name=document.name, 
+                pack_id=pack.id, 
+                created_at=document.created_at
+            ) 
         except Exception as e:
             logger.error(e)
             await self.session.rollback()
+            raise
+
+    async def get_pack(self, id: UUID) -> PackSchema:
+        pack = await self.session.get(PackOrm, id)
+        if not pack:
+            raise ValueError(f"Pack whith id: {id} not found")
+        return pack.from_orm_to_schema()
+
+    async def get_packs(self) -> list[PackSchema]:
+        stmt = select(PackOrm)
+        result = await self.session.execute(stmt)
+        packs_orm = result.scalars().all()
+
+        if not packs_orm:
+            return []
+        return [orm.from_orm_to_schema() for orm in packs_orm]
+
+    
+    async def check_pack_collection_exists(self, id: UUID) -> bool:
+        pack = await self.session.get(PackOrm, id)
+        if not pack:
+            raise ValueError("Not found")
+
+        return await self.qdrant.collection_exists(pack.name)
+
+    async def get_pack_documents_list(self, id: UUID) -> list[DocumentSchema]:
+        stmt = select(DocumentOrm).where(DocumentOrm.pack_id == id)
+        result = await self.session.execute(stmt)
+        docs_orm = result.scalars().all()
+
+        if not docs_orm:
+            return []
+        
+        return [orm.from_orm_to_schema() for orm in docs_orm]
+
