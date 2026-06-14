@@ -8,6 +8,9 @@ import uvicorn
 from src.api import router as api_router
 from src.core.config import settings
 from src.models.db_helper import db_helper
+from src.services.http import http_client
+from src.services.qdrant import qdrant
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -16,6 +19,8 @@ async def lifespan(app: FastAPI):
     yield
     # Shutdown
     await db_helper.dispose()
+    await http_client.aclose()
+    await qdrant.close()
 
 
 app = FastAPI(

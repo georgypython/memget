@@ -7,14 +7,15 @@ from sqlalchemy.ext.asyncio import (
 
 from src.core.config import settings
 from src.models import (
-    Base, 
-    MessageOrm, 
-    ChatOrm, 
-    PackOrm, 
-    DocumentOrm, 
-    chat_docs, 
-    pack_chats
+    Base,
+    MessageOrm,
+    ChatOrm,
+    PackOrm,
+    DocumentOrm,
+    chat_docs,
+    pack_chats,
 )
+
 
 class DbHelper:
     def __init__(
@@ -47,8 +48,6 @@ class DbHelper:
     async def init_db(self) -> None:
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-
-
 
 
 db_helper = DbHelper(url=settings.db.url)
